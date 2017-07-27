@@ -3,9 +3,6 @@
 
 
  #include <stdio.h>
- #include <sys/ipc.h>
- #include <sys/shm.h>
- #define KEY_OF_DDT 1231
  #define xstr(s) str(s)
  #define str(s) #s
  #define ARP_CACHE "/proc/net/arp"
@@ -36,6 +33,6 @@ typedef struct{
 
 }deviceDescriptTable;
 
+ deviceDescriptTable ddt;
 void printDDT();
-deviceDescriptTable* getDDT();
 #endif
