@@ -25,10 +25,10 @@ int main(void){
 						flag=1;
 					}
 				}
-				if(flag==0){
-					ddt->ddsc[ddt->count].macAddr=strdup(hwAddr);          
-					ddt->ddsc[ddt->count].id=ddt->count;        
-					ddt->ddsc[ddt->count++].ipAddr=strdup(ipAddr);         
+				if(flag==0){//새로운 경우 맞음.
+					//ddt->ddsc[ddt->count].macAddr=strdup(hwAddr);                                         //ddt->ddsc[ddt->count].id=ddt->count;        
+					//ddt->ddsc[ddt->count++].ipAddr=strdup(ipAddr);         
+					insertDD(hwAddr,ipAddr);
 				}
 			}
 			else;

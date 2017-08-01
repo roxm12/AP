@@ -3,15 +3,17 @@
 
 
  #include <stdio.h>
+ #include <stdlib.h>
  #include <sys/ipc.h>
  #include <sys/shm.h>
+ #include <string.h>
  #define KEY_OF_DDT 1231
  #define xstr(s) str(s)
  #define str(s) #s
  #define ARP_CACHE "/proc/net/arp"
  #define ARP_STRING_LEN  1023
  #define ARP_BUFFER_LEN  (ARP_STRING_LEN + 1)
- #define MAX_HOST_NUM 1024
+ #define MAX_HOST_NUM 64
  #define N_INTERFACE "wlan0"
  #define ARP_LINE_FORMAT "%" xstr(ARP_STRING_LEN) "s %*s %*s " \
 	                     "%" xstr(ARP_STRING_LEN) "s %*s " \
@@ -35,7 +37,9 @@ typedef struct{
 	int count;
 
 }deviceDescriptTable;
-
 void printDDT();
 deviceDescriptTable* getDDT();
+void refreshDDT();
+void insertDD(char *hwAddr,char *ipAddr);
+
 #endif
