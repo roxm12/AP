@@ -5,7 +5,7 @@ int main(){
 
 	int fd;
 	char *addr;
-	struct stat sb;
+	struct stat sb;//현재 shm의 상태를 알기 위함임.
 	fd=shm_open(SHM_NAME,O_RDONLY,0);
 	if(fd == -1)
 		perror("shm_open");
