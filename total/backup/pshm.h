@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <sys/mman.h>
-#include <sys/stat.h>
 #define MMAP_SIZE 1000
 #define SHM_NAME "/ddt"
 

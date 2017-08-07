@@ -20,6 +20,7 @@ int main(){
 
 	write(STDOUT_FILENO,addr,sb.st_size);
 	printf("\n");
+	printf("size is %d\n",sb.st_size);
 	exit(EXIT_SUCCESS);
 
 
