@@ -1,6 +1,4 @@
 #include "ddt.h"
-#include "sem.h"
-#include "pshm.h"
 
 void refreshDDT(DDT *ddt){//strdup으로 할당한 M 을 다 해제해주어야 한다.
 	int i;
@@ -8,7 +6,7 @@ void refreshDDT(DDT *ddt){//strdup으로 할당한 M 을 다 해제해주어야 
 		free(ddt->ddsc[i].macAddr);
 		free(ddt->ddsc[i].ipAddr);
 	}
-	memset(ddt,0,sizeof(deviceDescriptTable));
+	memset(ddt,0,sizeof(DDT));
 }
 
 void printDDT(){

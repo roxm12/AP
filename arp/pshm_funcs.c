@@ -35,7 +35,7 @@ void shmemory_close(){
 		perror("shm_unlink");
 	return;
 }
-DDT*  shmemory_write(){
+void* shmemory_write(){
 	int fd;
 	size_t len=sizeof(DDT);
 	DDT *addr;
@@ -61,7 +61,7 @@ DDT*  shmemory_write(){
 	return addr;
 }
 
-DDT*  shmemory_read(){
+void* shmemory_read(){
 	int fd;
 	DDT * addr;
 	struct stat sb;

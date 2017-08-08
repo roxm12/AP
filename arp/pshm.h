@@ -10,6 +10,6 @@
 
 int  shmemory_open();
 void shmemory_close();
-DDT*  shmemory_write();
-DDT*  shmeory_read();
+void* shmemory_write();
+void*  shmeory_read();
 #endif

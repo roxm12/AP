@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "sem.h"
+#include "pshm.h"
 #define MAX_HOST_NUM 64
 typedef struct{
 	int id;
@@ -16,8 +18,7 @@ typedef struct{
 
 	deviceDescriptor ddsc[MAX_HOST_NUM];
 	int count;
-}deviceDescriptTable;
-typedef deviceDescriptTable DDT;
+}DDT;//deviceDescriptTable
 void printDDT();
 void refreshDDT(DDT *ddt);
 void insertDD(char *hwAddr,char *ipAddr);
