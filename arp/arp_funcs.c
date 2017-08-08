@@ -1,16 +1,15 @@
 #include "arpCache.h"
 
-void setDDT(FILE *arpCache){
+void setDDT(){
 
 
 	DDT *ddt;
-	initDDT();
+	FILE * arpCache;
+		initDDT();
+	arpCache=fopen(ARP_CACHE,"r");
 	if(arpCache == NULL){
-		arpCache=fopen(ARP_CACHE,"r");
-		if(arpCache == NULL){
-			perror("Arp Cache: Failed to open file \"" ARP_CACHE "\"");
-			return;
-		}
+		perror("Arp Cache: Failed to open file \"" ARP_CACHE "\"");
+		return;
 	}
 	while(1){
 		char header[ARP_BUFFER_LEN];
@@ -28,7 +27,7 @@ void setDDT(FILE *arpCache){
 			}
 			else;//wlan0이 아닌 networkinterface는 신경 쓸 필요가 없다.
 		}
-	printDDT(ddt);
+	//	printDDT(ddt);
 		rewind(arpCache);
 		sleep(1);
 	}

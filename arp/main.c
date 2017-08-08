@@ -3,7 +3,7 @@
 int main(){
 
 	FILE *a;
-	setDDT(a);
+	setDDT(NULL);
 
 
 return 0;

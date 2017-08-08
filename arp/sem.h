@@ -2,6 +2,7 @@
 #define __SEM_H__
 #include <semaphore.h>
 #include <sys/stat.h>
+#include <sys/syscall.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>

@@ -22,5 +22,5 @@
 /*%1024s*/
 
 
-void setDDT(FILE *);
+void setDDT();
 #endif

@@ -1,7 +1,4 @@
 #include "sem.h"
-
-
-
 sem_t* semaphore_open(){
     sem_t *sem;
 	sem=sem_open(SEM_NAME_FOR_DDT,O_CREAT,0666,1); //O_EXCL로 하면 그 프로세스만 접근 가능
@@ -9,12 +6,12 @@ sem_t* semaphore_open(){
 		perror("sem_open");
 		return NULL;
 	}
-	printf("%ld sem_open() succeeded\n",(long)getpid());
+	printf("%ld sem_open() succeeded\n",(long)syscall(__NR_gettid));
 	return sem;
 }
 void semaphore_close(){
    sem_unlink(SEM_NAME_FOR_DDT);
-   printf("%ld sem_close() succeeded\n",(long)getpid());
+   printf("%ld sem_close() succeeded\n",(long)syscall(__NR_gettid));
    return;
 }
 
@@ -26,7 +23,7 @@ void semaphore_wait(sem_t* sem){
 		perror("sem_wait");
 		return;
 	}
-	printf("%ld sem_wait() succeeded\n",(long)getpid());
+	printf("%ld sem_wait() succeeded\n",(long)syscall(__NR_gettid));
 	return;
 }
 //post -- increase --> unlock
@@ -36,7 +33,7 @@ void semaphore_post(sem_t *sem){
 		perror("sem_post");
 		return;
 	}
-	printf("%ld sem_post() succeeded\n",(long)getpid());
+	printf("%ld sem_post() succeeded\n",(long)syscall(__NR_gettid));
 	return;
 
 }
