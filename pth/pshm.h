@@ -8,8 +8,8 @@
 #define MMAP_SIZE 1000
 #define SHM_NAME "/ddt"
 
-int  shmemory_open();
-void shmemory_close();
-void* shmemory_write();
-void*  shmeory_read();
+int  shmemory_open();//공유메모리 영역 open
+void shmemory_close();//공유메모리 영역 해제
+void* shmemory_write();//공유메모리 영역 write
+void*  shmeory_read();//공유메모리 영역 read
 #endif

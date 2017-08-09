@@ -6,8 +6,8 @@
 typedef void* (*threadFptr)(void *);
 typedef enum{
 	DDT_MODULE=0,
-	PRINT_MODULE,
-	SEARCH_MODULE,
+	READ,
+	FIND_DD,
     FILTER,
 	UPDATE
 }pth_type;
@@ -15,8 +15,8 @@ typedef enum{
 threadFptr funcTable[NUM_OF_PTHF];
 
 void * ddtModule(void *);
-void * printModule(void *);
-void * searchModule(void *);
+void * shmreadModule(void *);
+void * findDDModule(void *);
 void initFuncTable();
 
 

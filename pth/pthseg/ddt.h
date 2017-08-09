@@ -8,12 +8,11 @@
 #define MAX_CATEGORY_NUM 5
 #define MAX_HOST_NUM 64
 typedef enum{
- PORN=0,//성인사이트
- ADS,//광고
- DRUGS,//마약
- GAMBLING,//도박
- USER_DEFINED//사용자 정의
-
+	PORN=0,
+	ADS,
+	DRUGS,
+	GAMBLING,
+	USER_DEFINED
 }category;
 typedef struct{
 	int id;
@@ -27,12 +26,12 @@ typedef struct{
 typedef struct{
 
 	deviceDescriptor ddsc[MAX_HOST_NUM];
-	int count;//host number
+	int count;
 }DDT;//deviceDescriptTable
 void printDDT();
 void refreshDDT(DDT *ddt);
 void insertDD(char *hwAddr,char *ipAddr);
 int isMacInDDT(char *hwAddr);
 void initDDT();
-deviceDescriptor*  searchWithIP(char *ipAddr);
+int  searchWithIP(deviceDescriptor *ves, char *ipAddr);
 #endif

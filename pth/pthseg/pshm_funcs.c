@@ -58,7 +58,7 @@ void* shmemory_write(){
 		perror("close fd");
 		return NULL;
 	}
-	return addr;//DDT의 주소를 반환한다.
+	return addr;
 }
 
 void* shmemory_read(){

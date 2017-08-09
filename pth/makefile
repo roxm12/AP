@@ -1,7 +1,7 @@
 CC = gcc
 
 pth_exe : main.o arp_funcs.o ddt.o pshm_funcs.o sem_funcs.o
-	gcc -g -o pth_exe  main.o pth_funcs.o arp_funcs.o ddt.o pshm_funcs.o sem_funcs.o -lpthread -lrt
+	gcc -gdbb -o pth_exe  main.o pth_funcs.o arp_funcs.o ddt.o pshm_funcs.o sem_funcs.o -lpthread -lrt
 
 main.o : main.c
 	gcc -c -o main.o main.c

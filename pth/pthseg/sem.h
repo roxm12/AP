@@ -12,7 +12,7 @@
 //sem_t* getSem();
 sem_t* semaphore_open();
 void semaphore_close();
-void semaphore_wait(sem_t *sem);//decrease(lock)
-void semaphore_post(sem_t *sem);//increase(unlock)
+void semaphore_wait(sem_t *sem);
+void semaphore_post(sem_t *sem);
 
 #endif
