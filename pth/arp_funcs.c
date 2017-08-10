@@ -1,12 +1,10 @@
 #include "arpCache.h"
 /*
    arp로 부터 접속된 host의 정보를 받는다.
-*/
+ */
 void setDDT(){
 
-	DDT *ddt;
 	FILE * arpCache;
-		initDDT();
 	arpCache=fopen(ARP_CACHE,"r");
 	if(arpCache == NULL){
 		perror("Arp Cache: Failed to open file \"" ARP_CACHE "\"");
@@ -22,15 +20,19 @@ void setDDT(){
 		int flag=0;
 		while(3 == fscanf(arpCache, ARP_LINE_FORMAT, ipAddr, hwAddr, device)){
 			if(!strcmp(device,N_INTERFACE)){//wlan0인 경우에만 DDT에 저장한다.
-				flag=isMacInDDT(hwAddr);
-				if(flag ==0)
-					insertDD(hwAddr,ipAddr);
+				if(isMacInDDT(hwAddr)){
+					if(isIpUpdate(hwAddr,ipAddr));//mac is in and ip is updatef
+					else//means mac is in but ip isn't updated
+						updateIP(hwAddr,ipAddr);
+				}
+				else insertDD(hwAddr,ipAddr);
 			}
 			else;//wlan0이 아닌 networkinterface는 신경 쓸 필요가 없다.
+			//	printDDT(ddt);
+			sleep(1);
 		}
-	//	printDDT(ddt);
+
 		rewind(arpCache);
-		sleep(1);
 	}
 	return;
 }

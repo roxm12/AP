@@ -53,7 +53,7 @@ void* shmemory_write(){
 		perror("mmapW");
 		return NULL;
 	}
-	printf("Resized to %ld bytes \n",(long)len);
+//	printf("Resized to %ld bytes \n",(long)len);
 	if(close(fd) == -1){
 		perror("close fd");
 		return NULL;

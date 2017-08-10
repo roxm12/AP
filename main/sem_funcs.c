@@ -6,12 +6,12 @@ sem_t* semaphore_open(){
 		perror("sem_open");
 		return NULL;
 	}
-	printf("%ld sem_open() succeeded\n",(long)syscall(__NR_gettid));
+//	printf("%ld sem_open() succeeded\n",(long)syscall(__NR_gettid));
 	return sem;
 }
 void semaphore_close(){
    sem_unlink(SEM_NAME_FOR_DDT);
-   printf("%ld sem_close() succeeded\n",(long)syscall(__NR_gettid));
+ //  printf("%ld sem_close() succeeded\n",(long)syscall(__NR_gettid));
    return;
 }
 
@@ -23,7 +23,7 @@ void semaphore_wait(sem_t* sem){
 		perror("sem_wait");
 		return;
 	}
-	printf("%ld sem_wait() succeeded\n",(long)syscall(__NR_gettid));
+//	printf("%ld sem_wait() succeeded\n",(long)syscall(__NR_gettid));
 	return;
 }
 //post -- increase --> unlock
@@ -33,7 +33,7 @@ void semaphore_post(sem_t *sem){
 		perror("sem_post");
 		return;
 	}
-	printf("%ld sem_post() succeeded\n",(long)syscall(__NR_gettid));
+//	printf("%ld sem_post() succeeded\n",(long)syscall(__NR_gettid));
 	return;
 
 }

@@ -3,17 +3,30 @@
 
 void initFuncTable(){
 	funcTable[DDT_MODULE]=ddtModule;
-	funcTable[READ]=shmreadModule;
+	funcTable[PRINT_MODULE]=printModule;
+	funcTable[SEARCH_MODULE]=searchModule;
 }
 
 
 void * ddtModule(void *arg){
 
 	setDDT();
-
+	return NULL;
 }
-void * shmreadModule(void *arg){
-
+void * printModule(void *arg){
 	printDDT();
+	return NULL;
+}
+void * searchModule(void *arg){
 
+	deviceDescriptor *ves;
+	char *tempIP="172.24.1.105";
+	ves=searchWithIP(tempIP);
+	if(ves != NULL){
+		printf("host[%d] of %10s  is %10s\n",ves->id,ves->ipAddr,ves->macAddr);
+	}
+	else{
+		printf("ves wrong\n");
+	}
+	return NULL;
 }

@@ -1,7 +1,8 @@
 #include "arpCache.h"
-
+/*
+   arp로 부터 접속된 host의 정보를 받는다.
+*/
 void setDDT(){
-
 
 	DDT *ddt;
 	FILE * arpCache;

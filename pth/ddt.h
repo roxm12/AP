@@ -16,23 +16,26 @@ typedef enum{
 
 }category;
 typedef struct{
-	int id;
 	char *ipAddr;
 	char *macAddr;
-	int blockCategoryList[MAX_CATEGORY_NUM-1];
+	int blockCategoryList[MAX_CATEGORY_NUM];
 	//list blockCategoryList;
 
 }deviceDescriptor;
 
 typedef struct{
 
-	deviceDescriptor ddsc[MAX_HOST_NUM];
+	deviceDescriptor* ddsc[MAX_HOST_NUM];
 	int count;//host number
 }DDT;//deviceDescriptTable
 void printDDT();
 void refreshDDT(DDT *ddt);
 void insertDD(char *hwAddr,char *ipAddr);
+int isIpUpdate(char *hwaddr, char *ipAddr);
 int isMacInDDT(char *hwAddr);
 void initDDT();
+void deleteDDT(char *hwAddr);
+void regDDT(char *hwAddr, int categoryList[]);
+void updateIP(char *hwAddr,char *ipAddr);
 deviceDescriptor*  searchWithIP(char *ipAddr);
 #endif

@@ -1,7 +1,11 @@
 #include <stdio.h>
 #include "pth.h"
 int main(){
-
+   
+//	char *tempMac="24:df:6a:e9:35:89";
+//	int blocklist[MAX_CATEGORY_NUM]={0,0,0,0,0};
+	initDDT();
+//	regDDT(tempMac,blocklist);
 	printf("c: create arp g:get ddt info p:print ddt  q:quit\n");
 	while(1){
 		pthread_t ddt_m;
