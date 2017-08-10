@@ -1,7 +1,14 @@
 #include "arpCache.h"
-/*
-   arp로 부터 접속된 host의 정보를 받는다.
- */
+ /*
+function: void setDDT()
+arthor:정한솔 20170803
+return: 
+parameter:
+function details:
+ARP로부터 AP에 연결된 모든 호스트의 정보를 주기적으로 받고 
+이에 맞춰 DDT 정보를 수정 및 갱신한다.
+
+*/
 void setDDT(){
 
 	FILE * arpCache;

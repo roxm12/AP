@@ -10,9 +10,10 @@ typedef enum{
 	SEARCH_MODULE,
     FILTER,
 	UPDATE
-}pth_type;
+}pth_type;//function Table의 각 index에 따른 함수들의 기능 정의
 
 threadFptr funcTable[NUM_OF_PTHF];
+//thread function table
 
 void * ddtModule(void *);
 void * printModule(void *);

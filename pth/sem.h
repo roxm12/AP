@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#define SEM_NAME_FOR_DDT  "/sol_smp"
+#define SEM_NAME_FOR_DDT  "/sol_smp"//Semaphore section name
 
 //sem_t* getSem();
 sem_t* semaphore_open();

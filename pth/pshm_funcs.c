@@ -1,6 +1,19 @@
 #include "pshm.h"
 #include <string.h>
 #include <unistd.h>
+
+/////Sharedmemory functions
+
+/*
+function: int shemory_open()
+arthor:정한솔 20170801
+return: 
+ 1-- 공유메모리 객체 생성 성공
+-1-- 공유메모리 객체 생성 실패
+parameter:
+function details:
+공유메모리 객체(for DeciceDescriptTable)를 생성
+*/
 int shmemory_open(){
 	int fd;
 	 DDT *addr;
@@ -14,8 +27,7 @@ int shmemory_open(){
 		return -1;
 	}
 
-	//shm mapping
-
+    //shm mapping
 	addr=mmap(NULL, sizeof(DDT),PROT_READ | PROT_WRITE, MAP_SHARED,fd,0);
 	if(addr==MAP_FAILED){
 		perror("mmap");
@@ -28,13 +40,28 @@ int shmemory_open(){
 
 	return 1;
 }
-
+/*
+function: void shmemory_close()
+arthor:정한솔 20170801
+return: 
+parameter:
+function details:
+공유메모리 영역(for DeciceDescriptTable) 해제
+*/
 void shmemory_close(){
 
 	if(shm_unlink(SHM_NAME) == -1)
 		perror("shm_unlink");
 	return;
 }
+/*
+function: void* shmemory_write()
+arthor:정한솔 20170801
+return: void* DDT reference 
+parameter:
+function details:
+공유메모리 영역(for DeciceDescriptTable)에 write하기 위한 설정
+*/
 void* shmemory_write(){
 	int fd;
 	size_t len=sizeof(DDT);
@@ -60,7 +87,14 @@ void* shmemory_write(){
 	}
 	return addr;//DDT의 주소를 반환한다.
 }
-
+/*
+function: void* shmemory_read()
+arthor:정한솔 20170801
+return: void* DDT reference 
+parameter:
+function details:
+공유메모리 영역(for DeciceDescriptTable)에 read하기 위한 설정
+*/
 void* shmemory_read(){
 	int fd;
 	DDT * addr;

@@ -17,7 +17,7 @@
  #define ARP_LINE_FORMAT "%" xstr(ARP_STRING_LEN) "s %*s %*s " \
 	                     "%" xstr(ARP_STRING_LEN) "s %*s " \
 						 "%" xstr(ARP_STRING_LEN) "s"
-//즉 접속해제 되는 애들도 해결해야 한다.
+
 /* Format for fscanf() to read the 1st, 4th, and 6th space-delimited fields */
 /*%1024s*/
 

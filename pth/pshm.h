@@ -6,7 +6,7 @@
 #include "ddt.h"
 #include <sys/mman.h>
 #define MMAP_SIZE 1000
-#define SHM_NAME "/ddt"
+#define SHM_NAME "/ddt"//Shared memory section name
 
 int  shmemory_open();//공유메모리 영역 open
 void shmemory_close();//공유메모리 영역 해제

@@ -15,6 +15,14 @@ typedef enum{
  USER_DEFINED//사용자 정의
 
 }category;
+/*
+name: deviceDescriptor
+details: AP에 연결된 호스트(디바이스)의 정보를 저장
+field:
+char *ipAddr - IP주소
+char *macAddr - MAC 주소
+int blockCategoryList[MAX_CATEGORY_NUM] - 호스트에 적용된 차단정책 정보
+*/
 typedef struct{
 	char *ipAddr;
 	char *macAddr;
@@ -22,7 +30,13 @@ typedef struct{
 	//list blockCategoryList;
 
 }deviceDescriptor;
-
+/*
+name: DDT(DeviceDescriptorTable)
+details: AP에 등록된 모든호스트(디바이스)의 정보를 저장
+field:
+deviceDescriptor* ddsc[MAX_HOST_NUM] - 모든 호스트의 정보들을 참조하는 테이블
+int count - 등록된 호스트의 수
+*/
 typedef struct{
 
 	deviceDescriptor* ddsc[MAX_HOST_NUM];
