@@ -32,7 +32,7 @@ struct queued_pkt{
 	int payload_len;
 };
 
-char *ip2str(in_addr_t ip)
+char *ip2str(in_addr_t ip)	//ip주소를 스트링으로 바꾸는 함수
 {
 	static char buf[2][sizeof("255.255.255.255")];
 	static short int index = 0;
@@ -54,23 +54,27 @@ int look_for_tcp_flags(unsigned char *dgram, unsigned int datalen)
 	struct iphdr *iphdrs;
 	struct tcphdr *tcphdrs;
 	iphdrs = (struct iphdr *)dgram;
-	printf("datalen: %d\n", datalen);
-	printf("iphdr: %d\n", sizeof(struct iphdr));
-	printf("tcphdr: %d\n", sizeof(struct tcphdr));
+	//printf("datalen: %d\n", datalen);
+	//printf("iphdr: %d\n", sizeof(struct iphdr));
+	//printf("tcphdr: %d\n", sizeof(struct tcphdr));
 	if(datalen < sizeof(struct iphdr) + sizeof(struct tcphdr))
 	{
 		return 0;
 	}
-	printf("ip version: %d\n", iphdrs->version);
-	printf("ip ihl: %d\n", iphdrs->ihl);
+	//printf("ip version: %d\n", iphdrs->version);
+	//printf("ip ihl: %d\n", iphdrs->ihl);
+	
+	/* 
 	printf("saddr: %s\n", ip2str(iphdrs->saddr));
 	printf("daddr: %s\n", ip2str(iphdrs->daddr));
-	tcphdrs = (struct tcphdr *)(dgram + 4 * iphdrs->ihl);
-	printf("tcp sport: %u\n", htons(tcphdrs->source));
-	printf("tcp dport: %u\n", htons(tcphdrs->dest));
-	printf("tcp syn: %u\n", tcphdrs->syn);
-	printf("tcp ack: %u\n", tcphdrs->ack);
-	printf("tcp fin: %u\n", tcphdrs->fin);
+	*/
+	
+	//tcphdrs = (struct tcphdr *)(dgram + 4 * iphdrs->ihl);
+	//printf("tcp sport: %u\n", htons(tcphdrs->source));
+	//printf("tcp dport: %u\n", htons(tcphdrs->dest));
+	//printf("tcp syn: %u\n", tcphdrs->syn);
+	//printf("tcp ack: %u\n", tcphdrs->ack);
+	//printf("tcp fin: %u\n", tcphdrs->fin);
 	return 1;
 }
 
@@ -110,9 +114,10 @@ static int work_do(struct nfq_q_handle *qh, struct nfgenmsg *nfmsg, struct nfq_d
 	ph=nfq_get_msg_packet_hdr(nfa);
 	if(ph)
 	{
-		id = ntohl(ph->packet_id);
+		id = ntohl(ph->packet_id); //network byte to host byte
 		nfq_get_payload(nfa, &payload);
-		switch(ph->hook)
+		
+		switch(ph->hook)	//packet header에서 hook을 분석한다
 		{
 			case NF_IP_LOCAL_IN:
 				printf("\n\nLOCAL_IN\n");
@@ -125,11 +130,13 @@ static int work_do(struct nfq_q_handle *qh, struct nfgenmsg *nfmsg, struct nfq_d
 		}
 		
 		look_for_tcp_flags((unsigned char*)q_pkt.payload, q_pkt.payload_len);
+		
+		//패킷을 drop할지, accept할지 등을 결정하는 함수
 		nfq_set_verdict(qh, id, NF_ACCEPT, 0, NULL);
 	}
 }
 
-int netlink_init(int q_num)
+int netlink_init(int q_num)//nfq 생성
 {
 	struct nfq_handle *h;
 	struct nfq_q_handle *qh;
@@ -148,7 +155,7 @@ int netlink_init(int q_num)
 		exit(-1);
 	}
 	
-	qh = nfq_create_queue(h,q_num, &work_do, NULL);
+	qh = nfq_create_queue(h,q_num, &work_do, NULL);	//create하면서 work_do 함수 호출
 	if(!qh)
 	{
 		fprintf(stderr, "Error During nfq_creqte_queue()\n");
