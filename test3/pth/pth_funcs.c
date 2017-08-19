@@ -11,12 +11,19 @@ function details:
 */
 void initFuncTable(){
 	funcTable[DDT_MODULE]=ddtModule;
-	funcTable[PRINT_MODULE]=printModule;
-	funcTable[SEARCH_MODULE]=searchModule;
+	funcTable[DDT_PRINT_MODULE]=ddt_printModule;
+	funcTable[DDT_SEARCH_MODULE]=ddt_searchModule;
 	funcTable[FILTER_MODULE]=filterModule;
+	funcTable[FILTER_SEARCH_MODULE]=filter_searchModule;
+	funcTable[FILTER_UPDATE_MODULE]=filter_updateModule;
+	funcTable[COM_MODULE]=comModule;
 }
 void * filterModule(void *arg){
      printf("filter module!\n");  
+	return NULL;
+}
+void * comModule(void *arg){
+	printf("comModule\n");
 	return NULL;
 }
  /*
@@ -39,7 +46,7 @@ parameter:
 function details:
  printDDT()을 thread로 실행하기 위한 Wrapper function
 */
-void * printModule(void *arg){
+void * ddt_printModule(void *arg){
 	printDDT();
 	return NULL;
 } /*
@@ -52,7 +59,7 @@ function details:
 아직 임시로 만들어놓은 것임. NFQ에서 arg로 ip주소를 받아야 한다.
  ves alloc 해제해주어야 함.
 */
-void * searchModule(void *arg){
+void * ddt_searchModule(void *arg){
 
 	deviceDescriptor *ves;
 	char *tempIP="172.24.1.105";
@@ -63,4 +70,12 @@ void * searchModule(void *arg){
 		printf("ves wrong\n");
 	}
 	return NULL;
+}
+void * filter_searchModule(void *arg){
+ printf("filter_searchModule\n");
+ return NULL;
+}
+void * filter_updateModule(void *arg){
+ printf("filter_updateModule\n");
+ return NULL;
 }

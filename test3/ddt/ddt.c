@@ -182,7 +182,7 @@ parameter: char *hwAddr MAC 주소 int blockList[] 차단카테고리리스트
 function details:
 DDT에 새로운 호스트의 MAC 주소와 차단카테고리리스트 정보 등록
  */
-void updateBL(char *hwAddr, int blockList[]){
+void updateBL(char *hwAddr, unsigned int blockList){
 	int i;
 	sem_t *sem;
 	sem=(sem_t*)semaphore_open();
@@ -190,12 +190,11 @@ void updateBL(char *hwAddr, int blockList[]){
 	DDT *ddt=(DDT*)shmemory_write();
 	for(i=0;i<ddt->count;i++){
 		if(!strcmp(ddt->ddsc[i]->macAddr,hwAddr))
-			memcpy(ddt->ddsc[i]->blockCategoryList,
-					blockList,sizeof(ddt->ddsc[i]->blockCategoryList));
+			ddt->ddsc[i]->blockCategoryList=blockList;
 	}
 	semaphore_post(sem);
 }
-void regDDT(char *hwAddr,int blockList[]){
+void regDDT(char *hwAddr,unsigned int blockList){
 	sem_t *sem;
 	sem=(sem_t*)semaphore_open();
 		semaphore_wait(sem);
@@ -205,8 +204,7 @@ void regDDT(char *hwAddr,int blockList[]){
 		return;
 	}
 	ddt->ddsc[ddt->count]=(deviceDescriptor*)malloc(sizeof(deviceDescriptor));
-	memcpy(ddt->ddsc[ddt->count]->blockCategoryList,
-			blockList,sizeof(ddt->ddsc[ddt->count]->blockCategoryList));
+	ddt->ddsc[ddt->count]->blockCategoryList=blockList;
 	inet_aton("0.0.0.0",&(ddt->ddsc[ddt->count]->ipAddr));
 	ddt->ddsc[ddt->count++]->macAddr=strdup(hwAddr);
 	semaphore_post(sem);
@@ -299,8 +297,7 @@ int searchWithIP(deviceDescriptor *ves, char *ipAddr){
 			ves=(deviceDescriptor*)malloc(sizeof(deviceDescriptor));
 			ves->ipAddr=ddt->ddsc[i]->ipAddr;
 			ves->macAddr=strdup(ddt->ddsc[i]->macAddr);
-			memcpy(ves->blockCategoryList,ddt->ddsc[i]->blockCategoryList
-					,sizeof(ves->blockCategoryList));
+			ves->blockCategoryList=ddt->ddsc[i]->blockCategoryList;
 			flag=1;
 			break;
 		}

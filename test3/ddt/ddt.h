@@ -11,12 +11,17 @@
 #include "../sem/sem.h"
 #define MAX_CATEGORY_NUM 5
 #define MAX_HOST_NUM 64
+#define PORN 0x1
+#define ADS  0x2
+#define DRUGS 0x4
+#define GAMBLING 0x8
+#define USER_DEFINED 0x16
 typedef enum{
- PORN=0,//성인사이트
- ADS,//광고
- DRUGS,//마약
- GAMBLING,//도박
- USER_DEFINED//사용자 정의
+ PORN_IDX=0,//성인사이트
+ ADS_IDX,//광고
+ DRUGS_IDX,//마약
+ GAMBLING_IDX,//도박
+ USER_DEFINED_IDX//사용자 정의
 
 }category;
 /*
@@ -30,7 +35,7 @@ int blockCategoryList[MAX_CATEGORY_NUM] - 호스트에 적용된 차단정책 �
 typedef struct{
 	struct in_addr ipAddr;
 	char *macAddr;
-	int blockCategoryList[MAX_CATEGORY_NUM];
+	unsigned int blockCategoryList;
 	//list blockCategoryList;
 
 }deviceDescriptor;
@@ -54,8 +59,8 @@ int isIpUpdate(char *hwaddr, char *ipAddr);
 int isMacInDDT(char *hwAddr);
 void initDDT();
 void deleteDDT(char *hwAddr);
-void regDDT(char *hwAddr, int categoryList[]);
+void regDDT(char *hwAddr, unsigned int categoryList);
 void updateIP(char *hwAddr,char *ipAddr);
 int searchWithIP(deviceDescriptor *ves,char *ipAddr);
-void updateBL(char *hwAddr ,int categoryList[]);
+void updateBL(char *hwAddr ,unsigned int categoryList);
 #endif
