@@ -4,6 +4,7 @@
 #include "./signal/sig.h"
 #include "./pth/pth.h"
 #include <pthread.h>
+extern threadFptr funcTable[NUM_OF_PTHF];
 
 int main(){
     /*

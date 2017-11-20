@@ -10,7 +10,6 @@ typedef enum{
 }pth_type;//function Table의 각 index에 따른 함수들의 기능 정의
 
 //thread function table
-
 void * ddtModule(void *);
 void * updateModule(void *);
 void * comModule(void *);

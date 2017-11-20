@@ -1,14 +1,12 @@
 #include "rapidjson/document.h"
 #include "rapidjson/prettywriter.h"
 #include <cstdio>
+#include <cstring>
+#include <cstdlib>
 #include <iostream>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
 #include "../ddt/ddt.h"
-using namespace std;
 using namespace rapidjson;
-
+using namespace std;
 char * convert(char *str) {
 
     char *temp = strtok(str, ",");
@@ -53,9 +51,9 @@ void parse()
     int gambling_block2;
     int porn_block2;
 
+    
 
-
-    f = fopen("test.json", "r");
+    f = fopen("/home/pi/AP/test3/com/test.json","r");
     if (f != NULL)
     {
         fgets(tempStr, sizeof(tempStr), f);
@@ -78,6 +76,7 @@ void parse()
         string hwaddr = document["hw_addr"].GetString();
         strcpy(hw_addr, hwaddr.c_str());
         strcpy(hostIp,findIP(hw_addr));
+        printf("hostIP : %s\n",hostIP);
     }
 
 
@@ -85,6 +84,7 @@ void parse()
     {
         string reqpol = document["request_policy"].GetString();
         strcpy(request_policy, reqpol.c_str());
+        printf("request_policy : %s\n",request_policy);
 
         //      strcpy(request_policy, document["request_policy"].GetString());
 
@@ -92,14 +92,14 @@ void parse()
         if (!strcmp(request_policy, "reg_host"))
         {
             //ddt 장치추가 함수 불러오기
-            regDDT(hw_addr,none);
+  //          regDDT(hw_addr,none);
         }
 
         //장치 제거 함수
         else if (!strcmp(request_policy, "del_host"))
         {
             //ddt 장치제거함수
-            deleteDDT(hw_addr);
+    //        deleteDDT(hw_addr);
         }
 
         //장치 맥주소 변경 함수
@@ -205,6 +205,7 @@ void parse()
                 strcat(command," ");
                 strcat(command,ip_addr);
                 system(command);
+        
             }
         }
 
@@ -264,6 +265,5 @@ void parse()
 
 }
 }
-
 
 

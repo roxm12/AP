@@ -29,7 +29,7 @@ elif [ "$1" -eq 3 ]; then
 while read line;
 do
 sudo iptables -A PREROUTING -t nat -p tcp -s $2 -d $line -j DNAT --to 172.24.1.1:3000
-done < ~AP/shell/iplist/google_ip.txt
+done < ~/AP/shell/iplist/google_ip.txt
 
 else
 echo "wrong category num"

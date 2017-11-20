@@ -4,7 +4,7 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../config/db_pool');
 var convert = require('convert-string');
-var network=require('network');
+const browser=require('iotdb-arp');
   router.get('/', async function (req, res) {
     try {
       var connection = await pool.getConnection();
@@ -53,24 +53,40 @@ finally {
     pool.releaseConnection(connection);
 }
 });
-router.get('/al', async function (req, res) {
-  try {
-    var connection = await pool.getConnection();
-   network.get_active_interface(function(err,obj){
-           console.log(obj);
-           });
+// router.get('/al', async function (req, res) {
+//   try {
+//     var connection = await pool.getConnection();
+//   browser.browser({}, function(error,d){
+//           if(error){
+//           console.log("#",error);
+//           }
+//           else if(d){
+//            d=JSON.parse(d);
+//            all = JSON.parse(all1);
+//            for(var i in d)
+//              {
+//                  if(d[i].mac=="78:0C:B8:67:09:25")
+//                    {
+//                     ip:d[i].ip
+//                   }
+//               }
+            
+//           }
+//           else{
+//           }
+//           });
            
  
   
-    let query='select * from blocklist;'
-    let list = await connection.query(query);
-    res.status(200).send({list,message: 'ok' }); 
-}
-catch (err) {
-  res.status(500).send({ message: 'selecting user error' + err });
-}
-finally {
-  pool.releaseConnection(connection);
-}
-});
+//     let query='select * from blocklist;'
+//     let list = await connection.query(query);
+//     res.status(200).send({list,message: 'ok' }); 
+// }
+// catch (err) {
+//   res.status(500).send({ message: 'selecting user error' + err });
+// }
+// finally {
+//   pool.releaseConnection(connection);
+// }
+// });
 module.exports = router;

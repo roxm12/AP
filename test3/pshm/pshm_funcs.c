@@ -1,6 +1,8 @@
 #include "pshm.h"
 #include <string.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 /////Sharedmemory functions
 
@@ -28,7 +30,7 @@ int shmemory_open(){
 	}
 
     //shm mapping
-	addr=mmap(NULL, sizeof(DDT),PROT_READ | PROT_WRITE, MAP_SHARED,fd,0);
+	addr=(DDT*)mmap(NULL, sizeof(DDT),PROT_READ | PROT_WRITE, MAP_SHARED,fd,0);
 	if(addr==MAP_FAILED){
 		perror("mmap");
 		return -1;
@@ -75,7 +77,7 @@ void* shmemory_write(){
 		perror("ftruncateW");
 		return NULL;
 	}
-	addr=mmap(NULL,len,PROT_READ | PROT_WRITE, MAP_SHARED, fd ,0);
+	addr=(DDT*)mmap(NULL,len,PROT_READ | PROT_WRITE, MAP_SHARED, fd ,0);
 	if(addr==MAP_FAILED){
 		perror("mmapW");
 		return NULL;
@@ -108,12 +110,11 @@ void* shmemory_read(){
 		perror("fstat");
 		return NULL;
 	}
-	addr=mmap(NULL,sb.st_size,PROT_READ,MAP_SHARED,fd,0);
+	addr=(DDT*)mmap(NULL,sb.st_size,PROT_READ,MAP_SHARED,fd,0);
 	if(addr == MAP_FAILED){
 		perror("mmap");
 		return NULL;
 	}
 	return addr;
 }
-
 

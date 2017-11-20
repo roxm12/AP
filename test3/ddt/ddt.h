@@ -1,3 +1,4 @@
+
 #ifndef __DDT_H__
 #define __DDT_H__
 #include <stdio.h>
@@ -6,7 +7,6 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <pthread.h>
 #define MAX_CATEGORY_NUM 5
 #define MAX_HOST_NUM 64
 #define PORN 0x1
@@ -61,4 +61,6 @@ void regDDT(char *hwAddr, unsigned int categoryList);
 void updateIP(char *hwAddr,char *ipAddr);
 int searchWithIP(deviceDescriptor *ves,char *ipAddr);
 void updateBL(char *hwAddr ,unsigned int categoryList);
+
+
 #endif

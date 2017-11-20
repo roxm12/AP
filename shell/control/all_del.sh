@@ -1,3 +1,5 @@
 #! /bin/bash
 
-sudo iptables -t nat -F
+sudo iptables -F PREROUTING -t nat 
+
+sudo sh -c "iptables-save > /etc/iptables.ipv4.nat"
