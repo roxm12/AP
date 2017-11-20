@@ -1,0 +1,3 @@
+module.exports={
+  serverKey:"AAAAiHfi7Yc:APA91bE_ya8TKZcqs_5zyYweaq34WW-x6g_tas6tg6C_NG2YTxUAmX9LGidTaN9dWUpHTS9QF1woHhv9EDo4HS1wFt0awKGMgiI0h8Ie88rgRixCcIH4MS2gH0NKA7dWJVM48RR4klox"
+};

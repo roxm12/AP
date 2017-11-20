@@ -7,8 +7,6 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <pthread.h>
-#include "../pshm/pshm.h"
-#include "../sem/sem.h"
 #define MAX_CATEGORY_NUM 5
 #define MAX_HOST_NUM 64
 #define PORN 0x1
@@ -17,11 +15,10 @@
 #define GAMBLING 0x8
 #define USER_DEFINED 0x16
 typedef enum{
- PORN_IDX=0,//성인사이트
- ADS_IDX,//광고
- DRUGS_IDX,//마약
- GAMBLING_IDX,//도박
- USER_DEFINED_IDX//사용자 정의
+ PORN_IDX=8,//성인사이트
+ ADS_IDX=1,//광고
+ DRUGS_IDX=2,//마약
+ GAMBLING_IDX=4,//도박
 
 }category;
 /*
@@ -51,12 +48,13 @@ typedef struct{
 	deviceDescriptor* ddsc[MAX_HOST_NUM];
 	int count;//host number
 }DDT;//deviceDescriptTable
-//pthread_rwlock_t rwlock;
+void setDDT();
 void printDDT();
 void refreshDDT(DDT *ddt);
 void insertDD(char *hwAddr,char *ipAddr);
 int isIpUpdate(char *hwaddr, char *ipAddr);
 int isMacInDDT(char *hwAddr);
+char * findIP(char *hwAddr);
 void initDDT();
 void deleteDDT(char *hwAddr);
 void regDDT(char *hwAddr, unsigned int categoryList);

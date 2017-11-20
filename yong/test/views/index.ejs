@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>차단되었습니다.</title>
+  </head>
+  <body>
+    차단 되었습니다.
+    <input type="button" value="Click Me">
+    <img src = "https://s3.ap-northeast-2.amazonaws.com/seouri/dongguk.jpg">
+    <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+    <script>
+    var link = document.location.href;
+    $.post("http://172.24.1.1:3000/fcm",{dns : link});
+    </script>
+    </body>
+</html>

@@ -1,5 +1,7 @@
 #include "ddt.h"
 #include "arpCache.h"
+#include "../sem/sem.h"
+#include "../pshm/pshm.h"
 //DeviceDescriptTable functions
 //각 함수들의 루틴들이 중복되는 작업이 많으므로 성능 향상을 위해서 이를 줄인다.(20170810)
 
@@ -16,43 +18,41 @@ ARP로부터 AP에 연결된 모든 호스트의 정보를 주기적으로 받�
  */
 void setDDT(){
 
-	FILE * arpCache;
-	arpCache=fopen(ARP_CACHE,"r");
-	if(arpCache == NULL){
-		perror("Arp Cache: Failed to open file \"" ARP_CACHE "\"");
-		return;
-	}
-	//	initDDT();
-	while(1){
-		char header[ARP_BUFFER_LEN];
-		if(!fgets(header,sizeof(header),arpCache));
-		//arp 프로그램의  출력 중에  header는 제거.
-		// hwAddr-->MAC device --> network interface
-		char ipAddr[ARP_BUFFER_LEN], hwAddr[ARP_BUFFER_LEN], device[ARP_BUFFER_LEN];
-		int count=0;
-		int flag=0;
-		while(3 == fscanf(arpCache, ARP_LINE_FORMAT, ipAddr, hwAddr, device)){
+    FILE * arpCache;
+    arpCache=fopen(ARP_CACHE,"r");
+    if(arpCache == NULL){
+        perror("Arp Cache: Failed to open file \"" ARP_CACHE "\"");
+        return;
+    }
+    //	initDDT();
+    while(1){
+        char header[ARP_BUFFER_LEN];
+        if(!fgets(header,sizeof(header),arpCache)){}
+        //arp 프로그램의  출력 중에  header는 제거.
+        // hwAddr-->MAC device --> network interface
+        char ipAddr[ARP_BUFFER_LEN], hwAddr[ARP_BUFFER_LEN], device[ARP_BUFFER_LEN];
+        while(3 == fscanf(arpCache, ARP_LINE_FORMAT, ipAddr, hwAddr, device)){
 
-			if(!strcmp(device,N_INTERFACE)){//wlan0인 경우에만 DDT에 저장한다.
-				if(isMacInDDT(hwAddr)){
-					if(isIpUpdate(hwAddr,ipAddr));//mac is in and ip is updatef
-					else{//means mac is in but ip isn't updated
-						updateIP(hwAddr,ipAddr);
-					}
-				}
-				else {
-					insertDD(hwAddr,ipAddr);
-				}
-			}
-			else;//wlan0이 아닌 networkinterface는 신경 쓸 필요가 없다.
-			//	printDDT(ddt);
+            if(!strcmp(device,N_INTERFACE)){//wlan0인 경우에만 DDT에 저장한다.
+                if(isMacInDDT(hwAddr)){
+                    if(isIpUpdate(hwAddr,ipAddr));//mac is in and ip is updatef
+                    else{//means mac is in but ip isn't updated
+                        updateIP(hwAddr,ipAddr);
+                    }
+                }
+                else {
+                    insertDD(hwAddr,ipAddr);
+                }
+            }
+            //else;wlan0이 아닌 networkinterface는 신경 쓸 필요가 없다.
+            //				printDDT();
 
-			sleep(1);
-		}
+            sleep(1);
+        }
 
-		rewind(arpCache);
-	}
-	return;
+        rewind(arpCache);
+    }
+    return;
 }
 
 /*
@@ -64,12 +64,12 @@ function details:
 DDT가 가득찬 경우 접속하지 않은 host들을 제거하기 위해 refresh 한다.
  */
 void refreshDDT(DDT *ddt){//strdup으로 할당한 M 을 다 해제해주어야 한다.
-	int i;
-	for(i=0;i<ddt->count;i++){
-		free(ddt->ddsc[i]->macAddr);
-		free(ddt->ddsc[i]);
-	}
-	memset(ddt,0,sizeof(DDT));
+    int i;
+    for(i=0;i<ddt->count;i++){
+        free(ddt->ddsc[i]->macAddr);
+        free(ddt->ddsc[i]);
+    }
+    memset(ddt,0,sizeof(DDT));
 }
 /*
 function: void printDDT()
@@ -81,17 +81,17 @@ print all contentsof DDT
  */
 void printDDT(){
 
-	
-	int i;sem_t *sem;
-	sem=(sem_t*)semaphore_open();
-	semaphore_wait(sem);
-		
-	DDT *ddt=(DDT*)shmemory_read();
-	for(i=0;i<ddt->count;i++){
-		printf("Host[%d] ipAddress:%10s  macAddress:%10s\n"
-				,i,inet_ntoa(ddt->ddsc[i]->ipAddr),ddt->ddsc[i]->macAddr);
-	}
-	semaphore_post(sem);
+
+    int i;sem_t *sem;
+    sem=(sem_t*)semaphore_open();
+    semaphore_wait(sem);
+
+    DDT *ddt=(DDT*)shmemory_read();
+    for(i=0;i<ddt->count;i++){
+        printf("Host[%d] ipAddress:%10s  macAddress:%10s\n"
+                ,i,inet_ntoa(ddt->ddsc[i]->ipAddr),ddt->ddsc[i]->macAddr);
+    }
+    semaphore_post(sem);
 }
 /*
 function: void insertDD(char * hwAddr,char * ipAddr)
@@ -103,20 +103,20 @@ DDT에 해당 MAC 주소, IP 주소의 호스트 정보 삽입
  */
 void insertDD(char * hwAddr,char * ipAddr){
 
-	sem_t *sem;
-	sem=(sem_t*)semaphore_open();
-		semaphore_wait(sem);
-	DDT *ddt=(DDT*)shmemory_write();
-	ddt->ddsc[ddt->count]=(deviceDescriptor*)malloc(sizeof(deviceDescriptor));
-	memset(ddt->ddsc[ddt->count]->blockCategoryList,0,
-			sizeof(ddt->ddsc[ddt->count]->blockCategoryList));
-	inet_aton(ipAddr, &(ddt->ddsc[ddt->count]->ipAddr));
+    sem_t *sem;
+    sem=(sem_t*)semaphore_open();
+    semaphore_wait(sem);
+    DDT *ddt=(DDT*)shmemory_write();
+    ddt->ddsc[ddt->count]=(deviceDescriptor*)malloc(sizeof(deviceDescriptor));
+    memset(&(ddt->ddsc[ddt->count]->blockCategoryList),0,
+            sizeof(ddt->ddsc[ddt->count]->blockCategoryList));
+    inet_aton(ipAddr, &(ddt->ddsc[ddt->count]->ipAddr));
 
-	ddt->ddsc[ddt->count++]->macAddr=strdup(hwAddr);
-	if(ddt->count>MAX_HOST_NUM)//다른 것을 생각해야 함.
-		refreshDDT(ddt);
+    ddt->ddsc[ddt->count++]->macAddr=strdup(hwAddr);
+    if(ddt->count>MAX_HOST_NUM)//다른 것을 생각해야 함.
+        refreshDDT(ddt);
 
-	semaphore_post(sem);
+    semaphore_post(sem);
 }
 /*
 function: void deleteDDT(char *hwAddr)
@@ -128,23 +128,23 @@ DDT에 해당 MAC 주소의 호스트 정보 삭제
  */
 void deleteDDT(char *hwAddr){
 
-	int i;int j;
-	sem_t *sem;
-	sem=(sem_t*)semaphore_open();
-		semaphore_wait(sem);
-	DDT *ddt=(DDT*)shmemory_write();
-	for(i=0;i<ddt->count;i++){
+    int i;int j;
+    sem_t *sem;
+    sem=(sem_t*)semaphore_open();
+    semaphore_wait(sem);
+    DDT *ddt=(DDT*)shmemory_write();
+    for(i=0;i<ddt->count;i++){
 
-		if(!strcmp(ddt->ddsc[i]->macAddr,hwAddr)){
-			free(ddt->ddsc[i]->macAddr);
-			free(ddt->ddsc[i]);
-			for(j=i+1;j<ddt->count;j++){
-				ddt->ddsc[j-1]=ddt->ddsc[j];
-			}
-			ddt->count--;
-		}
-	}
-	semaphore_post(sem);
+        if(!strcmp(ddt->ddsc[i]->macAddr,hwAddr)){
+            free(ddt->ddsc[i]->macAddr);
+            free(ddt->ddsc[i]);
+            for(j=i+1;j<ddt->count;j++){
+                ddt->ddsc[j-1]=ddt->ddsc[j];
+            }
+            ddt->count--;
+        }
+    }
+    semaphore_post(sem);
 }
 /*
 function: void insertDD(char * hwAddr,char * ipAddr)
@@ -156,23 +156,23 @@ DDT에 해당 MAC 주소를 갖는 호스트의 IP주소를 새로 할당된 새
  */
 void updateIP(char *hwAddr, char *ipAddr){
 
-	int i;sem_t *sem;
-	sem=(sem_t*)semaphore_open();
-		semaphore_wait(sem);
-	printf("update ..\n");
-	DDT *ddt=(DDT*)shmemory_write();
-	for(i=0;i<ddt->count;i++){
-		if(!strcmp(ddt->ddsc[i]->macAddr,hwAddr)){
-			/*
-			   if(!inet_aton(ipAddr,&(ddt->ddssc[i]->ipAddr))){
-			   perror("wrong ip address format\n");
-			   break;
-			   }else break;*/
-			inet_aton(ipAddr,&(ddt->ddsc[i]->ipAddr));
-		}
-	}
-	semaphore_post(sem);
-	return;
+    int i;sem_t *sem;
+    sem=(sem_t*)semaphore_open();
+    semaphore_wait(sem);
+    printf("update ..\n");
+    DDT *ddt=(DDT*)shmemory_write();
+    for(i=0;i<ddt->count;i++){
+        if(!strcmp(ddt->ddsc[i]->macAddr,hwAddr)){
+            /*
+               if(!inet_aton(ipAddr,&(ddt->ddssc[i]->ipAddr))){
+               perror("wrong ip address format\n");
+               break;
+               }else break;*/
+            inet_aton(ipAddr,&(ddt->ddsc[i]->ipAddr));
+        }
+    }
+    semaphore_post(sem);
+    return;
 }
 /*
 function: void regDDT(char *hwAddr,int blockList[])
@@ -183,31 +183,31 @@ function details:
 DDT에 새로운 호스트의 MAC 주소와 차단카테고리리스트 정보 등록
  */
 void updateBL(char *hwAddr, unsigned int blockList){
-	int i;
-	sem_t *sem;
-	sem=(sem_t*)semaphore_open();
-		semaphore_wait(sem);
-	DDT *ddt=(DDT*)shmemory_write();
-	for(i=0;i<ddt->count;i++){
-		if(!strcmp(ddt->ddsc[i]->macAddr,hwAddr))
-			ddt->ddsc[i]->blockCategoryList=blockList;
-	}
-	semaphore_post(sem);
+    int i;
+    sem_t *sem;
+    sem=(sem_t*)semaphore_open();
+    semaphore_wait(sem);
+    DDT *ddt=(DDT*)shmemory_write();
+    for(i=0;i<ddt->count;i++){
+        if(!strcmp(ddt->ddsc[i]->macAddr,hwAddr))
+            ddt->ddsc[i]->blockCategoryList=blockList;
+    }
+    semaphore_post(sem);
 }
 void regDDT(char *hwAddr,unsigned int blockList){
-	sem_t *sem;
-	sem=(sem_t*)semaphore_open();
-		semaphore_wait(sem);
-	DDT *ddt=(DDT*)shmemory_write();
-	if(ddt->count>MAX_HOST_NUM){
-		perror("max host number\n");
-		return;
-	}
-	ddt->ddsc[ddt->count]=(deviceDescriptor*)malloc(sizeof(deviceDescriptor));
-	ddt->ddsc[ddt->count]->blockCategoryList=blockList;
-	inet_aton("0.0.0.0",&(ddt->ddsc[ddt->count]->ipAddr));
-	ddt->ddsc[ddt->count++]->macAddr=strdup(hwAddr);
-	semaphore_post(sem);
+    sem_t *sem;
+    sem=(sem_t*)semaphore_open();
+    semaphore_wait(sem);
+    DDT *ddt=(DDT*)shmemory_write();
+    if(ddt->count>MAX_HOST_NUM){
+        perror("max host number\n");
+        return;
+    }
+    ddt->ddsc[ddt->count]=(deviceDescriptor*)malloc(sizeof(deviceDescriptor));
+    ddt->ddsc[ddt->count]->blockCategoryList=blockList;
+    inet_aton("0.0.0.0",&(ddt->ddsc[ddt->count]->ipAddr));
+    ddt->ddsc[ddt->count++]->macAddr=strdup(hwAddr);
+    semaphore_post(sem);
 }
 /*
 function: isIpUpdate(char *hwAddr, char *ipAddr)
@@ -218,21 +218,21 @@ function details:
 해당 호스트에 DHCP가 할당한 IP가 변경되었는지 확인.
  */
 int isIpUpdate(char *hwAddr, char *ipAddr){
-	int i,flag=0;
-	sem_t *sem;
-	sem=(sem_t*)semaphore_open();
-		semaphore_wait(sem);
-	DDT *ddt=(DDT*)shmemory_read();
-	for(i=0;i<ddt->count;i++){
-		if(!strcmp(ddt->ddsc[i]->macAddr,hwAddr)){
-			if(!strcmp(inet_ntoa(ddt->ddsc[i]->ipAddr),ipAddr))
-				flag=1;//ip가  update 되어있는 경우는 1을 반환한다.
-			else;
-			break;
-		}
-	}
-	semaphore_post(sem);
-	return flag;
+    int i,flag=0;
+    sem_t *sem;
+    sem=(sem_t*)semaphore_open();
+    semaphore_wait(sem);
+    DDT *ddt=(DDT*)shmemory_read();
+    for(i=0;i<ddt->count;i++){
+        if(!strcmp(ddt->ddsc[i]->macAddr,hwAddr)){
+            if(!strcmp(inet_ntoa(ddt->ddsc[i]->ipAddr),ipAddr))
+                flag=1;//ip가  update 되어있는 경우는 1을 반환한다.
+            //	else;
+            break;
+        }
+    }
+    semaphore_post(sem);
+    return flag;
 }
 /*
 function: isMacInDDT(char * hwAddr)
@@ -244,20 +244,35 @@ function details:
  */
 int isMacInDDT(char * hwAddr){
 
-	int i;int flag=0;
-	sem_t *sem;
-	sem=(sem_t*)semaphore_open();
-		semaphore_wait(sem);
-	DDT *ddt=(DDT*)shmemory_read();
-	//	memset(ddt,0,sizeof(deviceDescriptTable));
-	for(i=0;i<ddt->count;i++){
-		if(!strcmp(ddt->ddsc[i]->macAddr,hwAddr)){
-			flag=1;
-			break;
-		}
-	}
-	semaphore_post(sem);
-	return flag;
+    int i;int flag=0;
+    sem_t *sem;
+    sem=(sem_t*)semaphore_open();
+    semaphore_wait(sem);
+    DDT *ddt=(DDT*)shmemory_read();
+    //	memset(ddt,0,sizeof(deviceDescriptTable));
+    for(i=0;i<ddt->count;i++){
+        if(!strcmp(ddt->ddsc[i]->macAddr,hwAddr)){
+            flag=1;
+            break;
+        }
+    }
+    semaphore_post(sem);
+    return flag;
+}
+char * findIP(char *hwAddr){
+    int i;char *retIp=NULL;
+    sem_t *sem;
+    sem=(sem_t*)semaphore_open();
+    semaphore_wait(sem);
+    DDT *ddt=(DDT*)shmemory_read();
+    for(i=0;i<ddt->count;i++){
+        if(!strcmp(ddt->ddsc[i]->macAddr,hwAddr)){
+            retIp=inet_ntoa(ddt->ddsc[i]->ipAddr);
+            break;
+        }
+    }
+    semaphore_post(sem);
+    return retIp;
 }
 /*
 function: void initDDT()
@@ -268,10 +283,10 @@ function details:
 DDT(공유메모리 객체 생성)
  */
 void initDDT(){
-	shmemory_close();
-	if(shmemory_open()== 1)
-		printf("shm success\n");
-	else printf("shm failed\n");
+    shmemory_close();
+    if(shmemory_open()== 1)
+        printf("shm success\n");
+    else printf("shm failed\n");
 }
 
 /*
@@ -284,24 +299,24 @@ function details:
  */
 int searchWithIP(deviceDescriptor *ves, char *ipAddr){
 
-	int i;int flag=0;
-	sem_t *sem;
-	sem=(sem_t*)semaphore_open();
-		semaphore_wait(sem);
-	DDT *ddt=(DDT*)shmemory_read();
-	struct in_addr tempIp;
-	ves=NULL;
-	inet_aton(ipAddr,&tempIp);
-	for(i=0;i<ddt->count;i++){
-		if(ddt->ddsc[i]->ipAddr.s_addr == tempIp.s_addr){//ip가 있다면 DD 반환
-			ves=(deviceDescriptor*)malloc(sizeof(deviceDescriptor));
-			ves->ipAddr=ddt->ddsc[i]->ipAddr;
-			ves->macAddr=strdup(ddt->ddsc[i]->macAddr);
-			ves->blockCategoryList=ddt->ddsc[i]->blockCategoryList;
-			flag=1;
-			break;
-		}
-	}
-	semaphore_post(sem);
-	return flag;
+    int i;int flag=0;
+    sem_t *sem;
+    sem=(sem_t*)semaphore_open();
+    semaphore_wait(sem);
+    DDT *ddt=(DDT*)shmemory_read();
+    struct in_addr tempIp;
+    ves=NULL;
+    inet_aton(ipAddr,&tempIp);
+    for(i=0;i<ddt->count;i++){
+        if(ddt->ddsc[i]->ipAddr.s_addr == tempIp.s_addr){//ip가 있다면 DD 반환
+            ves=(deviceDescriptor*)malloc(sizeof(deviceDescriptor));
+            ves->ipAddr=ddt->ddsc[i]->ipAddr;
+            ves->macAddr=strdup(ddt->ddsc[i]->macAddr);
+            ves->blockCategoryList=ddt->ddsc[i]->blockCategoryList;
+            flag=1;
+            break;
+        }
+    }
+    semaphore_post(sem);
+    return flag;
 }

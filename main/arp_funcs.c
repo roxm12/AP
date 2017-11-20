@@ -28,7 +28,7 @@ void setDDT(){
 			}
 			else;//wlan0이 아닌 networkinterface는 신경 쓸 필요가 없다.
 		}
-	//	printDDT(ddt);
+		printDDT(ddt);
 		rewind(arpCache);
 		sleep(1);
 	}

@@ -11,5 +11,5 @@
 int  shmemory_open();//공유메모리 영역 open
 void shmemory_close();//공유메모리 영역 해제
 void* shmemory_write();//공유메모리 영역 write
-void*  shmeory_read();//공유메모리 영역 read
+void* shmemory_read();//공유메모리 영역 read
 #endif

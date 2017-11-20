@@ -1,9 +1,6 @@
 #ifndef __ARPCACHE_H__
 #define __ARPCACHE_H__
 
-
- #include <stdio.h>
- #include <stdlib.h>
  #include <sys/ipc.h>
  #include <sys/shm.h>
  #include <string.h>
@@ -21,5 +18,4 @@
 /*%1024s*/
 
 
-void setDDT();
 #endif
